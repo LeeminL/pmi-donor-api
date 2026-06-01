@@ -27,7 +27,7 @@ if (substr($no_telepon, 0, 1) === '8') {
     $no_telepon = '62' . $no_telepon;
 }
 
-$stmt = $conn->prepare("SELECT id, nama, password, golongan_darah, status_aktif FROM pendonor WHERE no_telepon = ?");
+$stmt = $conn->prepare("SELECT id, nama, password, golongan_darah, status_aktif FROM pendonor WHERE no_telepon = ? AND is_verified = TRUE");
 $stmt->bind_param("s", $no_telepon);
 $stmt->execute();
 $result = $stmt->get_result();

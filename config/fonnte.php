@@ -1,5 +1,5 @@
 <?php
-$fonnte_api_key = '2j1BdF4redHk4nnHDujz'; // GANTI dengan API key dari fonnte.com
+$fonnte_api_key = '2j1BdF4redHk4nnHDujz';
 
 function sendWA($phone, $message) {
     global $fonnte_api_key;
@@ -19,13 +19,24 @@ function sendWA($phone, $message) {
     
     $response = curl_exec($curl);
     $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    $error = curl_error($curl);
     curl_close($curl);
     
-    return ['success' => $httpCode == 200, 'response' => json_decode($response, true)];
+    // LOG untuk debugging
+    error_log("Fonnte Response: " . $response);
+    error_log("HTTP Code: " . $httpCode);
+    if ($error) error_log("CURL Error: " . $error);
+    
+    return [
+        'success' => $httpCode == 200,
+        'response' => json_decode($response, true),
+        'http_code' => $httpCode,
+        'error' => $error
+    ];
 }
 
 function sendOTP($phone, $otp, $nama) {
-    $message = "🔐 *VERIFIKASI OTP - PMI Donor Darah*\n\n";
+    $message = "*VERIFIKASI OTP - PMI Donor Darah*\n\n";
     $message .= "Halo $nama,\n\n";
     $message .= "Kode verifikasi Anda: *$otp*\n";
     $message .= "Berlaku selama 5 menit.\n\n";
